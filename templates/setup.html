@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Setup — Interview Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { 50: '#EFF6FF', 100: '#DBEAFE', 500: '#3B82F6', 600: '#2563EB', 700: '#1D4ED8', 900: '#1E3A8A' } } } } }</script>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans">
+
+    <!-- Nav -->
+    <nav
+        class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                </svg>
+            </div>
+            <span class="font-bold text-slate-900 text-lg">Interview Coach</span>
+        </a>
+        <div id="userChip"
+            class="text-xs bg-brand-50 text-brand-700 font-semibold px-3 py-1.5 rounded-full border border-brand-100">
+        </div>
+    </nav>
+
+    <div class="pt-28 pb-20 px-4 max-w-2xl mx-auto">
+
+        <!-- Progress -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Step 2 of 3 — Interview
+                    Setup</span>
+                <span class="text-xs text-brand-600 font-semibold">Configure Session</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                <div class="bg-brand-600 h-1.5 rounded-full" style="width:66%"></div>
+            </div>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-1">Setup Your Interview</h1>
+        <p class="text-slate-500 mb-8">Configure your practice session below.</p>
+
+        <!-- Section 0: Voice Selection (NEW) -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    1</div>
+                <h2 class="text-base font-bold text-slate-800">Interviewer Voice</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <label id="voiceCard_female"
+                    class="voice-card cursor-pointer rounded-xl border-2 border-brand-600 bg-brand-50 p-4 flex items-center gap-3 transition selected-voice">
+                    <input type="radio" name="voice" value="en-US-JennyNeural" class="sr-only" checked />
+                    <span class="text-2xl">👩</span>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">Female</p>
+                        <p class="text-[11px] text-slate-500">Jenny — Natural US English</p>
+                    </div>
+                </label>
+                <label id="voiceCard_male"
+                    class="voice-card cursor-pointer rounded-xl border-2 border-slate-200 p-4 flex items-center gap-3 transition">
+                    <input type="radio" name="voice" value="en-US-GuyNeural" class="sr-only" />
+                    <span class="text-2xl">👨</span>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">Male</p>
+                        <p class="text-[11px] text-slate-500">Guy — Natural US English</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Section 1: Topic -->
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    1</div>
+                <h2 class="text-base font-bold text-slate-800">Interview Topic</h2>
+            </div>
+            <label class="block text-sm text-slate-600 mb-2">What are you interviewing for?</label>
+            <input id="topic" type="text"
+                placeholder="e.g. Software Engineer, Data Science, Product Manager, React Developer"
+                class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" />
+            <div class="flex flex-wrap gap-2 mt-3">
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">Software
+                    Engineer</span>
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">Data
+                    Science</span>
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">Machine
+                    Learning</span>
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">System
+                    Design</span>
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">Product
+                    Manager</span>
+                <span
+                    class="topic-chip cursor-pointer text-xs bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 transition font-medium">Frontend
+                    (React)</span>
+            </div>
+        </div>
+
+        <!-- Section 2: Difficulty -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    2</div>
+                <h2 class="text-base font-bold text-slate-800">Difficulty Level</h2>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="difficulty-card cursor-pointer rounded-xl border-2 border-slate-200 p-4 text-center transition hover:border-brand-400"
+                    data-value="beginner">
+                    <div class="text-2xl mb-1">🌱</div>
+                    <div class="text-sm font-bold text-slate-800">Beginner</div>
+                    <div class="text-[11px] text-slate-500 mt-1">Core concepts & basic skills</div>
+                </div>
+                <div class="difficulty-card cursor-pointer rounded-xl border-2 border-brand-600 bg-brand-50 p-4 text-center transition selected-diff"
+                    data-value="intermediate">
+                    <div class="text-2xl mb-1">🚀</div>
+                    <div class="text-sm font-bold text-slate-800">Intermediate</div>
+                    <div class="text-[11px] text-slate-500 mt-1">Industry standard experience</div>
+                </div>
+                <div class="difficulty-card cursor-pointer rounded-xl border-2 border-slate-200 p-4 text-center transition hover:border-brand-400"
+                    data-value="advanced">
+                    <div class="text-2xl mb-1">⚡</div>
+                    <div class="text-sm font-bold text-slate-800">Advanced</div>
+                    <div class="text-[11px] text-slate-500 mt-1">Complex problem solving</div>
+                </div>
+            </div>
+            <input type="hidden" id="difficulty" value="intermediate" />
+        </div>
+
+        <!-- Section 3: Files -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    3</div>
+                <h2 class="text-base font-bold text-slate-800">Preparation Materials <span
+                        class="text-sm font-normal text-slate-400">(Optional)</span></h2>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Resume Upload -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-2">📄 Resume</label>
+                    <div id="resumeDropzone"
+                        class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition"
+                        onclick="document.getElementById('resumeInput').click()">
+                        <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p id="resumeLabel" class="text-xs text-slate-400">Drop PDF or <span
+                                class="text-brand-600 font-semibold">browse</span></p>
+                    </div>
+                    <input type="file" id="resumeInput" class="hidden" accept=".pdf,.txt,.md"
+                        onchange="handleFileUpload(this, 'resume')" />
+                </div>
+                <!-- Notes Upload -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-2">📝 Study Notes</label>
+                    <div id="notesDropzone"
+                        class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition"
+                        onclick="document.getElementById('notesInput').click()">
+                        <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <p id="notesLabel" class="text-xs text-slate-400">Drop TXT, MD, PDF or <span
+                                class="text-brand-600 font-semibold">browse</span></p>
+                    </div>
+                    <input type="file" id="notesInput" class="hidden" accept=".pdf,.txt,.md"
+                        onchange="handleFileUpload(this, 'notes')" />
+                </div>
+            </div>
+            <!-- Upload status -->
+            <div id="uploadStatus" class="mt-3 text-xs text-slate-500 space-y-1"></div>
+        </div>
+
+        <!-- Error -->
+        <div id="errorMsg"
+            class="hidden bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Start Button -->
+        <button id="startBtn" onclick="startInterview()"
+            class="w-full py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-base transition shadow-md shadow-brand-200 flex items-center justify-center gap-2">
+            Start Interview
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+        </button>
+
+        <div class="mt-4 bg-brand-50 rounded-xl border border-brand-100 p-4 flex items-start gap-3">
+            <svg class="w-4 h-4 text-brand-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-xs text-brand-700"><strong>Pro Tip:</strong> Uploading your resume lets AI personalize
+                questions based on your actual experience.</p>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Load user data
+        window.addEventListener('DOMContentLoaded', () => {
+            const name = sessionStorage.getItem('ic_name');
+            if (!name) { window.location.href = '/'; return; }
+            document.getElementById('userChip').textContent = '👤 ' + name;
+        });
+
+        // Topic chips
+        document.querySelectorAll('.topic-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.getElementById('topic').value = chip.textContent;
+            });
+        });
+
+        // Voice selection
+        document.querySelectorAll('.voice-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.voice-card').forEach(c => {
+                    c.classList.remove('border-brand-600', 'bg-brand-50');
+                    c.classList.add('border-slate-200');
+                });
+                card.classList.add('border-brand-600', 'bg-brand-50');
+                card.classList.remove('border-slate-200');
+            });
+        });
+
+        // Difficulty selection
+        document.querySelectorAll('.difficulty-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-card').forEach(c => {
+                    c.classList.remove('border-brand-600', 'bg-brand-50');
+                    c.classList.add('border-slate-200');
+                });
+                card.classList.add('border-brand-600', 'bg-brand-50');
+                card.classList.remove('border-slate-200');
+                document.getElementById('difficulty').value = card.dataset.value;
+            });
+        });
+
+        // File upload
+        async function handleFileUpload(input, fileType) {
+            const file = input.files[0];
+            if (!file) return;
+            const sessionId = sessionStorage.getItem('ic_session_id');
+
+            const statusEl = document.getElementById('uploadStatus');
+            statusEl.innerHTML += `<div id="status_${fileType}" class="flex items-center gap-2 text-slate-500"><svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Uploading ${file.name}...</div>`;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('file_type', fileType);
+            formData.append('session_id', sessionId);
+
+            try {
+                const res = await fetch('/upload-file', { method: 'POST', body: formData });
+                const data = await res.json();
+                const el = document.getElementById(`status_${fileType}`);
+                if (res.ok) {
+                    el.className = 'flex items-center gap-2 text-green-600';
+                    el.innerHTML = `<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${file.name} uploaded (${data.text_length} chars extracted)`;
+
+                    const labelEl = document.getElementById(fileType === 'resume' ? 'resumeLabel' : 'notesLabel');
+                    labelEl.innerHTML = `<span class="text-green-600 font-semibold">✓ ${file.name}</span>`;
+                } else {
+                    el.className = 'text-red-500';
+                    el.textContent = `✗ Failed: ${data.detail}`;
+                }
+            } catch (e) {
+                document.getElementById(`status_${fileType}`).textContent = `✗ Upload failed`;
+            }
+        }
+
+        function startInterview() {
+            const topic = document.getElementById('topic').value.trim();
+            const difficulty = document.getElementById('difficulty').value;
+            const voiceInput = document.querySelector('input[name="voice"]:checked');
+            const voice = voiceInput ? voiceInput.value : 'en-US-JennyNeural';
+            if (!topic) {
+                document.getElementById('errorText').textContent = 'Please enter an interview topic.';
+                document.getElementById('errorMsg').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('errorMsg').classList.add('hidden');
+
+            sessionStorage.setItem('ic_topic', topic);
+            sessionStorage.setItem('ic_difficulty', difficulty);
+            sessionStorage.setItem('ic_voice', voice);
+            window.location.href = '/interview';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Report — Interview Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { 50: '#EFF6FF', 100: '#DBEAFE', 500: '#3B82F6', 600: '#2563EB', 700: '#1D4ED8' } } } } }</script>
+    <style>
+        .score-ring {
+            transition: stroke-dashoffset 1.5s ease;
+        }
+
+        .qa-item {
+            transition: all 0.2s;
+        }
+
+        .qa-item:hover {
+            box-shadow: 0 2px 12px 0 rgba(37, 99, 235, 0.07);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .fade-in-delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .fade-in-delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .fade-in-delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .fade-in-delay-4 {
+            animation-delay: 0.4s;
+        }
+
+        .fade-in-delay-5 {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans">
+
+    <!-- Nav -->
+    <nav
+        class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                </svg>
+            </div>
+            <span class="font-bold text-slate-900 text-lg">Interview Coach</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <a href="/setup" class="text-sm text-slate-500 hover:text-brand-600 font-medium transition">Practice
+                Again</a>
+            <button id="downloadBtn" onclick="downloadPDF()"
+                class="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl transition shadow-sm shadow-brand-200">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+            </button>
+        </div>
+    </nav>
+
+    <!-- Loading -->
+    <div id="loadingState" class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <div
+                class="w-14 h-14 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+            </div>
+            <p class="font-bold text-slate-800">Generating Your Report...</p>
+            <p class="text-slate-500 text-sm mt-1">Analyzing your interview performance</p>
+        </div>
+    </div>
+
+    <!-- Report Content -->
+    <div id="reportContent" class="hidden max-w-3xl mx-auto px-4 py-10 pb-20">
+
+        <!-- Header -->
+        <div class="text-center mb-8 fade-in">
+            <div
+                class="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full border border-green-200 mb-4">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Interview Complete
+            </div>
+            <h1 id="reportName" class="text-4xl font-extrabold text-slate-900 mb-2">Your Report</h1>
+            <p id="reportSubtitle" class="text-slate-500 text-base"></p>
+            <p id="reportDate" class="text-slate-400 text-sm mt-1"></p>
+        </div>
+
+        <!-- Score Cards -->
+        <div class="grid grid-cols-3 gap-4 mb-6 fade-in fade-in-delay-1">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+                <div class="relative w-20 h-20 mx-auto mb-3">
+                    <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3" />
+                        <circle id="techRing" cx="18" cy="18" r="15.9" fill="none" stroke="#2563EB" stroke-width="3"
+                            stroke-dasharray="100" stroke-dashoffset="100" class="score-ring" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span id="techScore" class="text-lg font-extrabold text-slate-800"></span>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-slate-700">Technical</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Accuracy & Depth</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+                <div class="relative w-20 h-20 mx-auto mb-3">
+                    <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3" />
+                        <circle id="commRing" cx="18" cy="18" r="15.9" fill="none" stroke="#16A34A" stroke-width="3"
+                            stroke-dasharray="100" stroke-dashoffset="100" class="score-ring" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span id="commScore" class="text-lg font-extrabold text-slate-800"></span>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-slate-700">Communication</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Clarity & Structure</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+                <div class="relative w-20 h-20 mx-auto mb-3">
+                    <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3" />
+                        <circle id="confRing" cx="18" cy="18" r="15.9" fill="none" stroke="#D97706" stroke-width="3"
+                            stroke-dasharray="100" stroke-dashoffset="100" class="score-ring" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span id="confScore" class="text-lg font-extrabold text-slate-800"></span>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-slate-700">Confidence</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Presence & Delivery</p>
+            </div>
+        </div>
+
+        <!-- Overall Score Bar -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 mb-6 fade-in fade-in-delay-2">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-bold text-slate-700">Overall Score</span>
+                <span id="overallScore" class="text-2xl font-extrabold text-brand-600"></span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-3">
+                <div id="overallBar"
+                    class="h-3 rounded-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-1500"
+                    style="width:0%"></div>
+            </div>
+            <p id="overallSummary" class="text-sm text-slate-600 mt-3 leading-relaxed"></p>
+        </div>
+
+        <!-- Strengths + Improvements -->
+        <div class="grid grid-cols-2 gap-4 mb-6 fade-in fade-in-delay-3">
+            <div class="bg-green-50 rounded-2xl border border-green-100 p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="text-sm font-bold text-green-800">Strengths</h3>
+                </div>
+                <ul id="strengthsList" class="space-y-1.5"></ul>
+            </div>
+            <div class="bg-orange-50 rounded-2xl border border-orange-100 p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <h3 class="text-sm font-bold text-orange-800">Areas to Improve</h3>
+                </div>
+                <ul id="improvementsList" class="space-y-1.5"></ul>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div id="recommendationCard" class="rounded-2xl border p-5 mb-6 text-center fade-in fade-in-delay-4">
+            <p id="recIcon" class="text-3xl mb-2"></p>
+            <p id="recLabel" class="text-base font-bold mb-1"></p>
+            <p id="recNote" class="text-sm text-slate-600"></p>
+        </div>
+
+        <!-- Q&A Transcript -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 fade-in fade-in-delay-5">
+            <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                Interview Transcript
+            </h2>
+            <div id="transcriptList" class="space-y-4"></div>
+        </div>
+
+        <!-- Download CTA -->
+        <div class="mt-8 bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-6 text-center text-white">
+            <svg class="w-8 h-8 mx-auto mb-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="text-lg font-bold mb-1">Download Your Full Report</h3>
+            <p class="text-blue-100 text-sm mb-4">Get a beautifully formatted PDF with complete transcript and analysis.
+            </p>
+            <button onclick="downloadPDF()"
+                class="px-6 py-2.5 bg-white text-brand-700 font-bold rounded-xl text-sm hover:bg-blue-50 transition flex items-center gap-2 mx-auto">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden min-h-screen flex items-center justify-center">
+        <div class="text-center max-w-sm">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Report Not Found</h2>
+            <p class="text-slate-500 text-sm mb-4" id="errorDetail">Could not load the interview report.</p>
+            <a href="/setup"
+                class="inline-block px-4 py-2 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition">Start
+                New Interview</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-100">
+        Made by <span class="font-semibold text-slate-500">hrohit12</span> · Interview Coach
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        const sessionId = sessionStorage.getItem('ic_session_id');
+        const apiType = sessionStorage.getItem('ic_api_type');
+        const apiKey = sessionStorage.getItem('ic_api_key');
+        const model = sessionStorage.getItem('ic_model');
+        const name = sessionStorage.getItem('ic_name');
+        const qualification = sessionStorage.getItem('ic_qualification');
+        const topic = sessionStorage.getItem('ic_topic');
+        const difficulty = sessionStorage.getItem('ic_difficulty');
+
+        const scoreLabel = s => s >= 8 ? 'Excellent' : s >= 6.5 ? 'Good' : s >= 5 ? 'Average' : 'Needs Work';
+
+        function setRing(ringId, score) {
+            const offset = 100 - (score / 10) * 100;
+            setTimeout(() => {
+                document.getElementById(ringId).style.strokeDashoffset = offset;
+            }, 300);
+        }
+
+        function renderReport(report) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('reportContent').classList.remove('hidden');
+
+            // Header
+            document.getElementById('reportName').textContent = report.candidate_name;
+            document.getElementById('reportSubtitle').textContent = `${report.qualification} · ${report.topic} Interview`;
+            document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Scores
+            document.getElementById('techScore').textContent = report.technical_score.toFixed(1);
+            document.getElementById('commScore').textContent = report.communication_score.toFixed(1);
+            document.getElementById('confScore').textContent = report.confidence_score.toFixed(1);
+            setRing('techRing', report.technical_score);
+            setRing('commRing', report.communication_score);
+            setRing('confRing', report.confidence_score);
+
+            // Overall
+            const overall = report.overall_score;
+            document.getElementById('overallScore').textContent = `${overall.toFixed(1)}/10 — ${scoreLabel(overall)}`;
+            setTimeout(() => {
+                document.getElementById('overallBar').style.width = `${overall * 10}%`;
+            }, 400);
+            document.getElementById('overallSummary').textContent = report.overall_summary;
+
+            // Strengths
+            const sl = document.getElementById('strengthsList');
+            (report.strengths || []).forEach(s => {
+                sl.innerHTML += `<li class="flex items-start gap-2 text-xs text-green-800"><svg class="w-3.5 h-3.5 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>${s}</li>`;
+            });
+
+            // Improvements
+            const il = document.getElementById('improvementsList');
+            (report.improvements || []).forEach(i => {
+                il.innerHTML += `<li class="flex items-start gap-2 text-xs text-orange-800"><svg class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>${i}</li>`;
+            });
+
+            // Recommendation
+            const recCard = document.getElementById('recommendationCard');
+            const rec = (report.recommendation || 'consider').toLowerCase();
+            const recMap = {
+                hire: { bg: 'bg-green-50 border-green-200', icon: '🎯', label: 'Recommended for Hire', labelColor: 'text-green-700' },
+                consider: { bg: 'bg-blue-50 border-blue-200', icon: '📋', label: 'Consider for Next Round', labelColor: 'text-blue-700' },
+                'needs work': { bg: 'bg-orange-50 border-orange-200', icon: '📚', label: 'Needs Further Preparation', labelColor: 'text-orange-700' },
+            };
+            const recInfo = recMap[rec] || recMap['consider'];
+            recCard.className = `rounded-2xl border p-5 text-center fade-in fade-in-delay-4 ${recInfo.bg}`;
+            document.getElementById('recIcon').textContent = recInfo.icon;
+            document.getElementById('recLabel').className = `text-base font-bold mb-1 ${recInfo.labelColor}`;
+            document.getElementById('recLabel').textContent = recInfo.label;
+            document.getElementById('recNote').textContent = report.recommendation_note || '';
+
+            // Transcript
+            const tl = document.getElementById('transcriptList');
+            (report.conversation_history || []).forEach((item, i) => {
+                tl.innerHTML += `
+        <div class="qa-item bg-slate-50 rounded-xl border border-slate-100 p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full">Q${i + 1}</span>
+            <p class="text-sm font-semibold text-slate-800">${item.question || ''}</p>
+          </div>
+          <div class="pl-4 border-l-2 border-green-200">
+            <p class="text-xs text-slate-500 font-bold mb-1">YOUR ANSWER</p>
+            <p class="text-sm text-slate-700 leading-relaxed">${item.answer || '<em class="text-slate-400">No answer recorded</em>'}</p>
+            ${item.feedback ? `<p class="text-xs text-slate-500 italic mt-2 pt-2 border-t border-slate-100">💡 ${item.feedback}</p>` : ''}
+          </div>
+        </div>`;
+            });
+        }
+
+        async function loadReport() {
+            if (!sessionId) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                document.getElementById('errorDetail').textContent = 'No session found. Please start a new interview.';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/get-report/${sessionId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    renderReport(data.report);
+                } else {
+                    // Try generating it
+                    const genRes = await fetch('/finish-interview', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            session_id: sessionId,
+                            api_type: apiType,
+                            api_key: apiKey,
+                            model: model,
+                            candidate_name: name,
+                            qualification: qualification,
+                            topic: topic,
+                            difficulty: difficulty,
+                        })
+                    });
+                    if (genRes.ok) {
+                        const genData = await genRes.json();
+                        renderReport(genData.report);
+                    } else {
+                        const err = await genRes.json();
+                        throw new Error(err.detail || 'Failed to generate report');
+                    }
+                }
+            } catch (e) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                document.getElementById('errorDetail').textContent = e.message;
+            }
+        }
+
+        async function downloadPDF() {
+            const btn = document.getElementById('downloadBtn');
+            btn.disabled = true;
+            btn.textContent = 'Generating PDF...';
+            try {
+                const res = await fetch(`/download-report/${sessionId}`, { method: 'POST' });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `InterviewCoach_Report.pdf`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } else {
+                    const err = await res.json();
+                    alert('PDF generation failed: ' + (err.detail || 'Unknown error'));
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<svg class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Download PDF';
+        }
+
+        loadReport();
+    </script>
+</body>
+
+</html>

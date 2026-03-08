@@ -1,0 +1,80 @@
+/* Interview Coach - Global Styles */
+
+:root {
+  --brand: #2563EB;
+  --brand-light: #EFF6FF;
+  --success: #16A34A;
+  --warning: #D97706;
+  --error: #DC2626;
+  --dark: #0F172A;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions globally */
+input, button, select, textarea {
+  transition: all 0.15s ease;
+}
+
+/* Loading spinner utility */
+.spinner {
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* File dropzone drag active */
+.dropzone-active {
+  border-color: var(--brand) !important;
+  background-color: var(--brand-light) !important;
+}
+
+/* Tooltip utility */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1E293B;
+  color: white;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+/* Pulse animation for live indicators */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.live-dot { animation: live-pulse 1.5s ease-in-out infinite; }
