@@ -184,6 +184,7 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
     topic        = _safe(report_data.get("topic", "—"))
     difficulty   = _safe(report_data.get("difficulty", "—").capitalize())
     total_q      = report_data.get("total_questions", 0)
+    duration     = _safe(report_data.get("duration", "N/A"))
 
     info_data = [
         [
@@ -207,12 +208,12 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
             Paragraph(topic, s["value"]),
         ],
         [
-            Paragraph("", s["label"]),
+            Paragraph("<b>Duration</b>", s["label"]),
             Paragraph("", s["label"]),
             Paragraph("<b>Difficulty · Total Questions</b>", s["label"]),
         ],
         [
-            Paragraph("", s["value"]),
+            Paragraph(duration, s["value"]),
             Paragraph("", s["value"]),
             Paragraph(f"{difficulty}  ·  {total_q}", s["value"]),
         ],
@@ -251,12 +252,12 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
     score_table = Table(score_data, colWidths=[35*mm, 22*mm, 45*mm])
     score_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), bg),
-        ("ROUNDEDCORNERS", [4]),
-        ("TOPPADDING",    (0, 0), (-1, -1), 10),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+        ("ROUNDEDCORNERS", [6]),
+        ("TOPPADDING",    (0, 0), (-1, -1), 14),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
         ("ALIGN",         (0, 0), (-1, -1), "CENTER"),
-        ("BOX",           (0, 0), (-1, -1), 1, fg),
+        ("BOX",           (0, 0), (-1, -1), 1.5, fg),
     ]))
 
     # Center the score table
@@ -264,13 +265,13 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
     outer.setStyle(TableStyle([
         ("ALIGN",   (0, 0), (-1, -1), "CENTER"),
         ("VALIGN",  (0, 0), (-1, -1), "MIDDLE"),
-        ("TOPPADDING",    (0, 0), (-1, -1), 0),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ("TOPPADDING",    (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
     elements.append(KeepTogether([
         *_section_heading("Overall Score", s),
         outer,
-        Spacer(1, 6*mm),
+        Spacer(1, 8*mm),
     ]))
 
     # ── 4. PERFORMANCE SCORES TABLE ───────────────────────────────────────────
@@ -284,10 +285,10 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
             Paragraph(label, s["body"]),
             Paragraph(f"<b>{val:.1f} / 10</b>", ParagraphStyle(
                 name=f"IC_sv_{label[:4]}", fontName="Helvetica-Bold",
-                fontSize=9, textColor=fg2, alignment=TA_CENTER)),
+                fontSize=10, textColor=fg2, alignment=TA_CENTER)),
             Paragraph(lab2, ParagraphStyle(
                 name=f"IC_sl_{label[:4]}", fontName="Helvetica-Bold",
-                fontSize=8, textColor=fg2, alignment=TA_CENTER)),
+                fontSize=9, textColor=fg2, alignment=TA_CENTER)),
         ]
 
     metrics_header = [
@@ -304,24 +305,24 @@ def generate_pdf_report(report_data: dict, file_path: str = None) -> str:
     col_w2 = [100*mm, 35*mm, 30*mm]
     metrics_table = Table(metrics_data, colWidths=col_w2)
     metrics_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, 0), C_BRAND),
-        ("TEXTCOLOR",     (0, 0), (-1, 0), C_WHITE),
+        ("BACKGROUND",    (0, 0), (-1, 0), C_SLATE_100),
+        ("TEXTCOLOR",     (0, 0), (-1, 0), C_SLATE_700),
         ("FONTNAME",      (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE",      (0, 0), (-1, 0), 8),
+        ("FONTSIZE",      (0, 0), (-1, 0), 9),
         ("ROWBACKGROUNDS",(0, 1), (-1, -1), [C_WHITE, C_SLATE_50]),
         ("BOX",           (0, 0), (-1, -1), 0.5, C_BORDER),
-        ("GRID",          (0, 0), (-1, -1), 0.3, C_BORDER),
-        ("TOPPADDING",    (0, 0), (-1, -1), 6),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-        ("LEFTPADDING",   (0, 0), (-1, -1), 8),
-        ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
+        ("LINEBELOW",     (0, 0), (-1, 0), 1, C_BORDER),
+        ("TOPPADDING",    (0, 0), (-1, -1), 10),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+        ("LEFTPADDING",   (0, 0), (-1, -1), 12),
+        ("RIGHTPADDING",  (0, 0), (-1, -1), 12),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
         ("ALIGN",         (1, 0), (-1, -1), "CENTER"),
     ]))
     elements.append(KeepTogether([
         *_section_heading("Performance Scores", s),
         metrics_table,
-        Spacer(1, 6*mm),
+        Spacer(1, 8*mm),
     ]))
 
     # ── 5. OVERALL ASSESSMENT ─────────────────────────────────────────────────

@@ -204,6 +204,10 @@ function connectWebSocket() {
         }));
     };
 
+    // Global audio queue to prevent overlapping voices
+    let aiSequencePromise = Promise.resolve();
+    let currentQuestionStartTime = 0;
+
     ws.onmessage = async event => {
         const data = JSON.parse(event.data);
         switch (data.type) {
@@ -217,15 +221,21 @@ function connectWebSocket() {
                 break;
 
             case 'question':
-                $('currentQuestionEl').textContent = data.text;
-                $('questionCounter').textContent = `Q ${data.question_number} / ${data.max_questions}`;
-                $('progressBar').style.width = `${(data.question_number / data.max_questions) * 100}%`;
-                $('qLabel').textContent = `Question ${data.question_number}`;
-                addChat('coach', data.text);
-                setAIState('speaking');
-                if (data.audio_b64) await playAudio(data.audio_b64);
-                setAIState('listening');
-                startVAD();
+                // Queue the question to play ONLY after any previous audio finishes
+                aiSequencePromise = aiSequencePromise.then(async () => {
+                    $('currentQuestionEl').textContent = data.text;
+                    $('questionCounter').textContent = `Q ${data.question_number} / ${data.max_questions}`;
+                    $('progressBar').style.width = `${(data.question_number / data.max_questions) * 100}%`;
+                    $('qLabel').textContent = `Question ${data.question_number}`;
+                    addChat('coach', data.text);
+                    setAIState('speaking');
+
+                    if (data.audio_b64) await playAudio(data.audio_b64);
+
+                    setAIState('listening');
+                    currentQuestionStartTime = Date.now(); // Track when answer period starts
+                    startVAD();
+                });
                 break;
 
             case 'transcript':
@@ -235,13 +245,19 @@ function connectWebSocket() {
                 break;
 
             case 'feedback':
-                updateInsights(data);
-                setAIState('speaking');
-                if (data.audio_b64) await playAudio(data.audio_b64);
+                // Queue the feedback to play ONLY after any previous audio finishes
+                aiSequencePromise = aiSequencePromise.then(async () => {
+                    updateInsights(data);
+                    setAIState('speaking');
+                    if (data.audio_b64) await playAudio(data.audio_b64);
+                });
                 break;
 
             case 'report_ready':
-                await finishInterview(true);
+                // Wait for any remaining audio to finish before ending the interview
+                aiSequencePromise = aiSequencePromise.then(async () => {
+                    await finishInterview(true);
+                });
                 break;
 
             case 'error':
@@ -329,7 +345,15 @@ function startVAD() {
                 clearTimeout(IC.silenceTimer); IC.silenceTimer = null;
             } else if (!IC.silenceTimer) {
                 IC.silenceTimer = setTimeout(() => {
-                    if (IC.isRecording) stopRecording();
+                    // Only auto-stop if they've been answering for at least 60 seconds
+                    // Or if they click "Done Answering" (handled elsewhere)
+                    const elapsed = Date.now() - currentQuestionStartTime;
+                    if (elapsed >= 60000 && IC.isRecording) {
+                        stopRecording();
+                    } else {
+                        // Reset timer if under 60 seconds
+                        IC.silenceTimer = null;
+                    }
                 }, IC.SILENCE_MS);
             }
         }
@@ -372,13 +396,36 @@ function startRecording() {
     };
     IC.mediaRecorder.start(200);
     IC.isRecording = true;
+
+    // Show manual skip button
+    const btn = $('doneAnsweringBtn');
+    if (btn) {
+        btn.classList.remove('hidden');
+        btn.classList.add('flex');
+    }
+
     setAIState('recording');
+}
+
+function forceStopRecording() {
+    // Manually triggered by the Done Answering button
+    if (IC.isRecording) {
+        stopRecording();
+    }
 }
 
 function stopRecording() {
     if (!IC.isRecording || !IC.mediaRecorder) return;
     clearTimeout(IC.silenceTimer); IC.silenceTimer = null;
     IC.isRecording = false;
+
+    // Hide manual skip button
+    const btn = $('doneAnsweringBtn');
+    if (btn) {
+        btn.classList.add('hidden');
+        btn.classList.remove('flex');
+    }
+
     IC.mediaRecorder.stop();
     stopVAD();
 }

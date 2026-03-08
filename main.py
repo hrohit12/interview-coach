@@ -602,6 +602,10 @@ async def websocket_interview(websocket: WebSocket):
                     if next_q > MAX_QUESTIONS:
                         history = sess.get("conversation_history", [])
                         evals = sess.get("evaluations", [])
+                         # Format elapsed time as MM:SS
+                        elapsed_sec = int(time.time() - sess.get("start_time", time.time()))
+                        duration_str = f"{elapsed_sec // 60:02d}:{elapsed_sec % 60:02d}"
+
                         if history:
                             report = await loop.run_in_executor(
                                 None, lambda: generate_final_report(
@@ -610,6 +614,7 @@ async def websocket_interview(websocket: WebSocket):
                                     qualification=config.get("qualification", ""),
                                     topic=config["topic"], difficulty=config["difficulty"],
                                     conversation_history=history, evaluations=evals,
+                                    duration=duration_str,
                                 )
                             )
                             sess["report"] = report
