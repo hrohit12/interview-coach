@@ -11,3 +11,4 @@ google-generativeai
 reportlab
 pdfplumber
 pypdf
+jinja2
