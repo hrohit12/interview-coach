@@ -10,4 +10,4 @@ groq
 google-generativeai
 reportlab
 pdfplumber
-PyPDF2
+pypdf
