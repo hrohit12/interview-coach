@@ -175,6 +175,7 @@ def generate_final_report(
     difficulty: str,
     conversation_history: list,
     evaluations: list,
+    duration: str = "N/A",
 ) -> dict:
     """
     Generate a comprehensive final interview report.
@@ -242,6 +243,7 @@ Generate the final report summary."""
         "topic": topic,
         "difficulty": difficulty.capitalize(),
         "total_questions": len(conversation_history),
+        "duration": duration,
         "technical_score": avg_technical,
         "communication_score": avg_communication,
         "confidence_score": avg_confidence,
