@@ -16,6 +16,7 @@ const IC = {
     topic: sessionStorage.getItem('ic_topic'),
     difficulty: sessionStorage.getItem('ic_difficulty'),
     voice: sessionStorage.getItem('ic_voice') || 'en-US-JennyNeural',
+    language: sessionStorage.getItem('ic_language') || 'english',
 
     // State flags
     isSpeaking: false,
@@ -197,6 +198,7 @@ function connectWebSocket() {
             api_key: IC.apiKey,
             model: IC.model,
             voice: IC.voice,
+            language: IC.language,
             name: IC.name,
             qualification: IC.qualification,
             topic: IC.topic,

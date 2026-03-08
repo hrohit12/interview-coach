@@ -64,6 +64,7 @@ def generate_question(
     notes_text: Optional[str] = None,
     question_number: int = 1,
     conversation_history: Optional[list] = None,
+    language: str = "english",
 ) -> str:
     """
     Generate an interview question based on context.
@@ -78,11 +79,13 @@ def generate_question(
     context = "\n\n".join(context_parts)
 
     system_prompt = f"""You are an expert technical interviewer conducting a {difficulty} level interview.
+Interview Language: {language.capitalize()}
 Candidate: {candidate_name} | Qualification: {qualification}
 Interview Topic: {topic}
 {f"Context about candidate: {context}" if context else ""}
 
 Your role:
+- The interview must be conducted STRICTLY in {language.capitalize()}. All your questions and text must be in {language.capitalize()}.
 - Ask one clear, relevant interview question at a time
 - Match difficulty: beginner (foundational), intermediate (applied), advanced (expert/design)
 - Be professional, encouraging, and specific to the topic
@@ -114,6 +117,7 @@ def evaluate_answer(
     question: str,
     answer: str,
     candidate_name: str,
+    language: str = "english",
 ) -> dict:
     """
     Evaluate a candidate's answer.
@@ -122,14 +126,16 @@ def evaluate_answer(
 
     system_prompt = f"""You are an expert technical interviewer evaluating a {difficulty} level answer.
 Topic: {topic} | Candidate: {candidate_name}
+Interview Language: {language.capitalize()}
 
-Evaluate the answer and respond ONLY with valid JSON in this exact format:
+Evaluate the answer and respond ONLY with valid JSON in this exact format.
+IMPORTANT: All text and feedback values MUST be written strictly in {language.capitalize()}:
 {{
   "score": <0-10 integer>,
   "technical_accuracy": <0-10 integer>,
   "communication_clarity": <0-10 integer>,
   "confidence_indicator": <0-10 integer>,
-  "feedback": "<2-3 sentences of constructive feedback>",
+  "feedback": "<2-3 sentences of constructive feedback in {language.capitalize()}>",
   "strengths": ["<strength1>", "<strength2>"],
   "improvements": ["<improvement1>", "<improvement2>"],
   "follow_up": "<optional follow-up question or empty string>"
@@ -176,6 +182,7 @@ def generate_final_report(
     conversation_history: list,
     evaluations: list,
     duration: str = "N/A",
+    language: str = "english",
 ) -> dict:
     """
     Generate a comprehensive final interview report.
@@ -198,9 +205,10 @@ def generate_final_report(
     system_prompt = f"""You are an expert interview coach generating a final interview report.
 Candidate: {candidate_name} | Qualification: {qualification}
 Topic: {topic} | Difficulty: {difficulty.capitalize()}
+Language: {language.capitalize()}
 
 Based on the interview session, generate a concise final summary report.
-Respond ONLY with valid JSON in this exact format:
+Respond ONLY with valid JSON in this exact format. All text strings MUST be in {language.capitalize()}:
 {{
   "overall_summary": "<2-3 sentence overall assessment>",
   "top_strengths": ["<strength1>", "<strength2>", "<strength3>"],

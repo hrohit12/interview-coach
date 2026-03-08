@@ -448,7 +448,7 @@ async def _tts_generate(text: str, voice: str = "en-US-JennyNeural") -> bytes:
         return b""
 
 
-def _transcribe_file(path: str) -> str:
+def _transcribe_file(path: str, lang: str = "en") -> str:
     """Synchronous faster-whisper transcription (run in executor)."""
     wav_path = path + ".wav"
     try:
@@ -462,7 +462,7 @@ def _transcribe_file(path: str) -> str:
     try:
         model = _get_whisper()
         segments, _ = model.transcribe(
-            audio_path, language="en", beam_size=5,
+            audio_path, language=lang, beam_size=5,
             vad_filter=True, vad_parameters={"min_silence_duration_ms": 300}
         )
         return " ".join(s.text.strip() for s in segments).strip()
@@ -491,6 +491,12 @@ async def websocket_interview(websocket: WebSocket):
     MAX_QUESTIONS = 10
     loop = asyncio.get_event_loop()
 
+    def _get_voice(cfg: dict) -> str:
+        voice = cfg.get("voice", "en-US-JennyNeural")
+        if cfg.get("language", "english").lower() == "hindi":
+            return "hi-IN-MadhurNeural" if "Guy" in voice else "hi-IN-SwaraNeural"
+        return voice
+
     async def _send(data: dict):
         await websocket.send_json(data)
 
@@ -511,12 +517,13 @@ async def websocket_interview(websocket: WebSocket):
                 question_number=qnum, conversation_history=history,
                 resume_text=session.get("resume_text"),
                 notes_text=session.get("notes_text"),
+                language=config.get("language", "english"),
             )
         )
         sid = config["session_id"]
         sessions.setdefault(sid, {})["current_question"] = question
 
-        audio_bytes = await _tts_generate(question, config.get("voice", "en-US-JennyNeural"))
+        audio_bytes = await _tts_generate(question, _get_voice(config))
         await _send({
             "type": "question",
             "text": question,
@@ -557,7 +564,8 @@ async def websocket_interview(websocket: WebSocket):
                     with open(tmp, "wb") as f:
                         f.write(buf_copy)
                     try:
-                        transcript = await loop.run_in_executor(None, _transcribe_file, tmp)
+                        lang_code = "hi" if config.get("language", "english").lower() == "hindi" else "en"
+                        transcript = await loop.run_in_executor(None, _transcribe_file, tmp, lang_code)
                     finally:
                         try: os.remove(tmp)
                         except Exception: pass
@@ -576,6 +584,7 @@ async def websocket_interview(websocket: WebSocket):
                             model=config["model"], topic=config["topic"],
                             difficulty=config["difficulty"], question=current_q,
                             answer=transcript, candidate_name=config["name"],
+                            language=config.get("language", "english"),
                         )
                     )
 
@@ -587,7 +596,7 @@ async def websocket_interview(websocket: WebSocket):
                     sess.setdefault("evaluations", []).append(evaluation)
 
                     fb_text = evaluation.get("feedback", "")
-                    fb_audio = await _tts_generate(fb_text, config.get("voice", "en-US-JennyNeural"))
+                    fb_audio = await _tts_generate(fb_text, _get_voice(config))
                     await _send({
                         "type": "feedback",
                         "text": fb_text,
@@ -615,6 +624,7 @@ async def websocket_interview(websocket: WebSocket):
                                     topic=config["topic"], difficulty=config["difficulty"],
                                     conversation_history=history, evaluations=evals,
                                     duration=duration_str,
+                                    language=config.get("language", "english"),
                                 )
                             )
                             sess["report"] = report
@@ -636,6 +646,7 @@ async def websocket_interview(websocket: WebSocket):
                                 qualification=config.get("qualification", ""),
                                 topic=config["topic"], difficulty=config["difficulty"],
                                 conversation_history=history, evaluations=evals,
+                                language=config.get("language", "english"),
                             )
                         )
                         sess["report"] = report

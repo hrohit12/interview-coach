@@ -48,12 +48,42 @@
         <h1 class="text-3xl font-extrabold text-slate-900 mb-1">Setup Your Interview</h1>
         <p class="text-slate-500 mb-8">Configure your practice session below.</p>
 
-        <!-- Section 0: Voice Selection (NEW) -->
+        <!-- Section 0: Language Selection (NEW) -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
             <div class="flex items-center gap-3 mb-4">
                 <div
                     class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
                     1</div>
+                <h2 class="text-base font-bold text-slate-800">Interview Language</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <label id="langCard_en"
+                    class="lang-card cursor-pointer rounded-xl border-2 border-brand-600 bg-brand-50 p-4 flex items-center gap-3 transition selected-lang">
+                    <input type="radio" name="language" value="english" class="sr-only" checked />
+                    <span class="text-2xl">🇺🇸</span>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">English</p>
+                        <p class="text-[11px] text-slate-500">Default Language</p>
+                    </div>
+                </label>
+                <label id="langCard_hi"
+                    class="lang-card cursor-pointer rounded-xl border-2 border-slate-200 p-4 flex items-center gap-3 transition">
+                    <input type="radio" name="language" value="hindi" class="sr-only" />
+                    <span class="text-2xl">🇮🇳</span>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">Hindi</p>
+                        <p class="text-[11px] text-slate-500">हिंदी</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Section 1: Voice Selection -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    2</div>
                 <h2 class="text-base font-bold text-slate-800">Interviewer Voice</h2>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -78,13 +108,13 @@
             </div>
         </div>
 
-        <!-- Section 1: Topic -->
+        <!-- Section 2: Topic -->
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
             <div class="flex items-center gap-3 mb-4">
                 <div
                     class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    1</div>
+                    3</div>
                 <h2 class="text-base font-bold text-slate-800">Interview Topic</h2>
             </div>
             <label class="block text-sm text-slate-600 mb-2">What are you interviewing for?</label>
@@ -113,12 +143,12 @@
             </div>
         </div>
 
-        <!-- Section 2: Difficulty -->
+        <!-- Section 3: Difficulty -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
             <div class="flex items-center gap-3 mb-4">
                 <div
                     class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    2</div>
+                    4</div>
                 <h2 class="text-base font-bold text-slate-800">Difficulty Level</h2>
             </div>
             <div class="grid grid-cols-3 gap-3">
@@ -144,12 +174,12 @@
             <input type="hidden" id="difficulty" value="intermediate" />
         </div>
 
-        <!-- Section 3: Files -->
+        <!-- Section 4: Files -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
             <div class="flex items-center gap-3 mb-4">
                 <div
                     class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    3</div>
+                    5</div>
                 <h2 class="text-base font-bold text-slate-800">Preparation Materials <span
                         class="text-sm font-normal text-slate-400">(Optional)</span></h2>
             </div>
@@ -238,6 +268,18 @@
             });
         });
 
+        // Language selection
+        document.querySelectorAll('.lang-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.lang-card').forEach(c => {
+                    c.classList.remove('border-brand-600', 'bg-brand-50');
+                    c.classList.add('border-slate-200');
+                });
+                card.classList.add('border-brand-600', 'bg-brand-50');
+                card.classList.remove('border-slate-200');
+            });
+        });
+
         // Voice selection
         document.querySelectorAll('.voice-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -301,6 +343,9 @@
             const difficulty = document.getElementById('difficulty').value;
             const voiceInput = document.querySelector('input[name="voice"]:checked');
             const voice = voiceInput ? voiceInput.value : 'en-US-JennyNeural';
+            const langInput = document.querySelector('input[name="language"]:checked');
+            const language = langInput ? langInput.value : 'english';
+
             if (!topic) {
                 document.getElementById('errorText').textContent = 'Please enter an interview topic.';
                 document.getElementById('errorMsg').classList.remove('hidden');
@@ -311,6 +356,7 @@
             sessionStorage.setItem('ic_topic', topic);
             sessionStorage.setItem('ic_difficulty', difficulty);
             sessionStorage.setItem('ic_voice', voice);
+            sessionStorage.setItem('ic_language', language);
             window.location.href = '/interview';
         }
     </script>
